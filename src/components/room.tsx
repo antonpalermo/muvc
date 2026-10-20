@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-export type RoomProps = {
+export type ConferenceRoomProps = {
   id: string; // room id
 };
 
-export default function Room({ id }: RoomProps) {
+export default function ConferenceRoom({ id }: ConferenceRoomProps) {
   useEffect(() => {
     const protocol = location.protocol === "https" ? "wss" : "ws";
     const ws = new WebSocket(`${protocol}://${location.host}/api/room/${id}`);
@@ -18,4 +18,6 @@ export default function Room({ id }: RoomProps) {
       ws.close();
     };
   }, [id]);
+
+  return <h1>Conference Room {id}</h1>;
 }

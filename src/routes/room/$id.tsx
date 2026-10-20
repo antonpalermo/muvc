@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Room from "../../components/room";
+import ConferenceRoom from "../../components/room";
 
 export const Route = createFileRoute("/room/$id")({
   component: RouteComponent,
@@ -8,5 +8,5 @@ export const Route = createFileRoute("/room/$id")({
 function RouteComponent() {
   const { id } = Route.useParams();
 
-  return <Room id={id} />;
+  return <ConferenceRoom id={id} />;
 }
