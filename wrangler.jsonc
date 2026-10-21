@@ -17,15 +17,15 @@
   "durable_objects": {
     "bindings": [
       {
-        "name": "METTING_SOCKET",
-        "class_name": "MeetingSocket",
+        "name": "CONFERENCE_SOCKET",
+        "class_name": "ConferenceSocket",
       },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["MeetingSocket"],
+      "new_sqlite_classes": ["ConferenceSocket"],
     },
   ],
   /**
