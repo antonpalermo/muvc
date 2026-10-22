@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import type { ConferenceSocket } from "./conference-socket.ts";
 
+export { ConferenceSocket } from "./conference-socket.ts";
+
 export type Bindings = {
   CONFERENCE_SOCKET: DurableObjectNamespace<ConferenceSocket>;
 };
@@ -11,11 +13,11 @@ app.get("/status", (ctx) => {
   return ctx.json({ message: "sample" });
 });
 
-app.get("/room/:id/:amount", (ctx) => {
+app.get("/room/:id/:amount", async (ctx) => {
   let stub = ctx.env.CONFERENCE_SOCKET.getByName(`${ctx.req.param().id}`);
   const amount = parseInt(ctx.req.param().amount);
 
-  const result = stub.increment(amount);
+  const result = await stub.increment(amount);
 
   return new Response(`Durable Object: ${result}`);
 });
