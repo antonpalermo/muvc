@@ -3,23 +3,25 @@ import type { ConferenceSocket } from "./conference-socket.ts";
 
 export { ConferenceSocket } from "./conference-socket.ts";
 
-export type Bindings = {
-  CONFERENCE_SOCKET: DurableObjectNamespace<ConferenceSocket>;
+export type HonoBindings = CloudflareBindings & {
+    CONFERENCE_SOCKET: DurableObjectNamespace<ConferenceSocket>;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{
+    Bindings: HonoBindings;
+}>().basePath("/api");
 
-app.get("/status", (ctx) => {
-  return ctx.json({ message: "sample" });
-});
+app.get("/room/:id", async (ctx) => {
+    const roomId = ctx.req.param().id;
+    const upgradeHeader = ctx.req.header("Upgrade");
 
-app.get("/room/:id/:amount", async (ctx) => {
-  let stub = ctx.env.CONFERENCE_SOCKET.getByName(`${ctx.req.param().id}`);
-  const amount = parseInt(ctx.req.param().amount);
+    if (!upgradeHeader || upgradeHeader !== "websocket") {
+        return ctx.text("worker expected upgrade header: websocket", 426);
+    }
 
-  const result = await stub.increment(amount);
-
-  return new Response(`Durable Object: ${result}`);
+    let stub = ctx.env.CONFERENCE_SOCKET.getByName(`${roomId}`);
+    // pass the fetch request to durable object's fetch()
+    return stub.fetch(ctx.req.raw);
 });
 
 export default app;
