@@ -1,23 +1,30 @@
 import { useEffect } from "react";
 
 export type ConferenceRoomProps = {
-  id: string; // room id
+    id: string; // room id
 };
 
 export default function ConferenceRoom({ id }: ConferenceRoomProps) {
-  useEffect(() => {
-    const protocol = location.protocol === "https" ? "wss" : "ws";
-    const ws = new WebSocket(`${protocol}://${location.host}/api/room/${id}`);
+    useEffect(() => {
+        const protocol = location.protocol === "https" ? "wss" : "ws";
+        const ws = new WebSocket(
+            `${protocol}://${location.host}/api/room/${id}`,
+        );
 
-    ws.addEventListener("message", (e) => console.log("message: ", e));
+        ws.onopen = () => {
+            console.log("ws connected on ", id);
+        };
 
-    return () => {
-      ws.removeEventListener("message", (e) => {
-        console.log("removed: ", e);
-      });
-      ws.close();
-    };
-  }, [id]);
+        ws.onmessage = (e) => {
+            console.log("msg", e.data);
+        };
 
-  return <h1>Conference Room {id}</h1>;
+        return () => {
+            if (ws.readyState === 1) {
+                ws.close();
+            }
+        };
+    }, [id]);
+
+    return <h1>Conference Room {id}</h1>;
 }
