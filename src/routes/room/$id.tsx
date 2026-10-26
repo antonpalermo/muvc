@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ConferenceRoom from "../../components/room";
+import ConferenceRoom from "../../components/conference-room";
 
 export const Route = createFileRoute("/room/$id")({
   component: RouteComponent,
