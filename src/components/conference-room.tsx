@@ -1,25 +1,16 @@
-import { useIdentityProvider } from "./identity-provider";
+import { useWebSocket } from "./use-websocket";
 
 export type ConferenceRoomProps = {
     id: string; // room id
 };
 
 export default function ConferenceRoom({ id }: ConferenceRoomProps) {
-    const identity = useIdentityProvider();
+    const socket = useWebSocket(id);
 
     return (
         <div>
-            <div>
-                <label htmlFor="name">Name </label>
-                <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={identity.name}
-                    onChange={(e) => identity.set(e.currentTarget.value)}
-                />
-            </div>
             <h1>Conference: {id}</h1>
+            <button onClick={() => socket.send("ping")}>click</button>
         </div>
     );
 }
