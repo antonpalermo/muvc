@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useWebSocket } from "./use-websocket";
 
 export type ConferenceRoomProps = {
@@ -6,6 +7,12 @@ export type ConferenceRoomProps = {
 
 export default function ConferenceRoom({ id }: ConferenceRoomProps) {
     const socket = useWebSocket(id);
+
+    useEffect(() => {
+        if (socket.state === WebSocket["OPEN"]) {
+            socket.send("a user has joined");
+        }
+    });
 
     return (
         <div>

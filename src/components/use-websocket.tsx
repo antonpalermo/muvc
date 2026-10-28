@@ -26,33 +26,55 @@ export function useWebSocket(id: string) {
 
         webSocketRef.current = webSocket;
 
-        webSocket.onopen = () => setState(WebSocket["OPEN"]);
-        webSocket.onmessage = (e) => {
+        function onOpenHandler() {
+            webSocket.send("ping");
+        }
+
+        function onMessageHandler(e: MessageEvent) {
+            if ((e.data as string) === "pong") {
+                setState(WebSocket["OPEN"]);
+            }
             setMessage(e.data);
-        };
-        webSocket.onerror = (e) => {
+        }
+
+        function onErrorHandler(e: Event) {
             console.log(
-                "websocket encountered an error connecting with the following reason: ",
+                "client encountered error when connecting to websocket: ",
                 e,
             );
-        };
-        webSocket.onclose = (e) => {
-            console.log("websocket is closed with the following reason: ", {
-                code: e.code,
-                reason: e.reason,
-                wasClean: e.wasClean,
-            });
 
             if (webSocketRef.current === webSocket) {
+                webSocketRef.current = null;
                 setState(WebSocket["CLOSED"]);
-                webSocket.close();
             }
-        };
+        }
+
+        function onCloseHandler(e: CloseEvent) {
+            console.log(
+                "client closed websocket connection with the following reason: ",
+                {
+                    code: e.code,
+                    reason: e.reason,
+                    wasClean: e.wasClean,
+                },
+            );
+
+            if (webSocketRef.current === webSocket) {
+                webSocketRef.current = null;
+                setState(WebSocket["CLOSED"]);
+            }
+        }
+
+        webSocket.addEventListener("open", onOpenHandler);
+        webSocket.addEventListener("error", onErrorHandler);
+        webSocket.addEventListener("message", onMessageHandler);
+        webSocket.addEventListener("close", onCloseHandler);
 
         return () => {
-            webSocket.onopen = null;
-            webSocket.onclose = null;
-            webSocket.onmessage = null;
+            webSocket.removeEventListener("open", onOpenHandler);
+            webSocket.removeEventListener("error", onErrorHandler);
+            webSocket.removeEventListener("message", onMessageHandler);
+            webSocket.removeEventListener("close", onCloseHandler);
 
             if (webSocketRef.current === webSocket) {
                 webSocketRef.current = null;
