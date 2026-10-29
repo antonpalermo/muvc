@@ -16,7 +16,7 @@ export default function ConferenceRoom({ id }: ConferenceRoomProps) {
 
     return (
         <div>
-            <h1>Conference: {id}</h1>
+            <h1 className="text-red-500">Conference: {id}</h1>
             <button onClick={() => socket.send("ping")}>click</button>
         </div>
     );

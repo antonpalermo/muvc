@@ -13,11 +13,13 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-router": "^1.170.45",
     "@tanstack/react-router-devtools": "^1.167.2",
     "hono": "^4.13.13",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.64.0",
