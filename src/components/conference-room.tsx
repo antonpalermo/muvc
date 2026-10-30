@@ -10,14 +10,13 @@ export default function ConferenceRoom({ id }: ConferenceRoomProps) {
 
     useEffect(() => {
         if (socket.state === WebSocket["OPEN"]) {
-            socket.send("a user has joined");
+            socket.send({ type: "join", data: { name: "Anton" } });
         }
     });
 
     return (
         <div>
             <h1 className="text-red-500">Conference: {id}</h1>
-            <button onClick={() => socket.send("ping")}>click</button>
         </div>
     );
 }

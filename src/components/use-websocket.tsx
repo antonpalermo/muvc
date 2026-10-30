@@ -84,11 +84,11 @@ export function useWebSocket(id: string) {
         };
     }, [id]);
 
-    const send = useCallback((data: string) => {
+    const send = useCallback((data: { [key: string]: any }) => {
         const socket = webSocketRef.current;
 
         if (socket?.readyState === WebSocket.OPEN) {
-            socket.send(data);
+            socket.send(JSON.stringify(data));
         }
     }, []);
 

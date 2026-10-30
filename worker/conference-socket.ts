@@ -36,12 +36,18 @@ export class ConferenceSocket extends DurableObject {
     }
 
     webSocketMessage(
-        _ws: WebSocket,
+        ws: WebSocket,
         message: string | ArrayBuffer,
     ): void | Promise<void> {
-        const clients = this.ctx.getWebSockets();
+        if (typeof message !== "string") {
+            return;
+        }
 
-        clients.forEach((client) => client.send(`user msg: ${message}`));
+        const data = JSON.parse(message);
+
+        if (data.type === "join") {
+            ws.send(JSON.stringify("this should be the participants "));
+        }
     }
 
     webSocketClose(
