@@ -1,19 +1,17 @@
 import { DurableObject } from "cloudflare:workers";
 import type { HonoBindings } from "./index.ts";
 
+export type Participant = {
+    name: string;
+    [key: string]: any;
+};
+
 export class ConferenceSocket extends DurableObject {
-    participants: Map<WebSocket, { [key: string]: string }>;
+    participants: Map<WebSocket, Participant>;
 
     constructor(ctx: DurableObjectState, env: HonoBindings) {
         super(ctx, env);
         this.participants = new Map();
-
-        this.ctx.getWebSockets().forEach((ws) => {
-            let attachment = ws.deserializeAttachment();
-            if (attachment) {
-                this.participants.set(ws, { ...attachment });
-            }
-        });
 
         this.ctx.setWebSocketAutoResponse(
             new WebSocketRequestResponsePair("ping", "pong"),
@@ -21,13 +19,10 @@ export class ConferenceSocket extends DurableObject {
     }
 
     fetch(_request: Request): Response | Promise<Response> {
-        const wsPair = new WebSocketPair();
-        const [client, server] = Object.values(wsPair);
+        const webSocketPair = new WebSocketPair();
+        const [client, server] = Object.values(webSocketPair);
 
         this.ctx.acceptWebSocket(server);
-
-        const id = crypto.randomUUID();
-        server.serializeAttachment({ id });
 
         return new Response(null, {
             status: 101,
@@ -43,11 +38,9 @@ export class ConferenceSocket extends DurableObject {
             return;
         }
 
-        const data = JSON.parse(message);
+        console.log(message)
 
-        if (data.type === "join") {
-            ws.send(JSON.stringify("this should be the participants "));
-        }
+        if (message === "message") ws.send("this is a secret message");
     }
 
     webSocketClose(
