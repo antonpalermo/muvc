@@ -30,17 +30,18 @@ export class ConferenceSocket extends DurableObject {
         });
     }
 
+    broadcast(message: string) {
+        this.ctx.getWebSockets().forEach((ws) => {
+            ws.send(message);
+        });
+    }
+
     webSocketMessage(
-        ws: WebSocket,
+        _webSocket: WebSocket,
         message: string | ArrayBuffer,
     ): void | Promise<void> {
-        if (typeof message !== "string") {
-            return;
+        if (typeof message === "string") {
         }
-
-        console.log(message)
-
-        if (message === "message") ws.send("this is a secret message");
     }
 
     webSocketClose(
