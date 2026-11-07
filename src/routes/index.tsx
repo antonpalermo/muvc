@@ -9,10 +9,18 @@ function Index() {
     const navigate = useNavigate();
     const [id, setId] = useState("");
 
-    const join = (id?: string) => {
+    const join = async (id?: string) => {
+        const uuid = id ? id : crypto.randomUUID();
+
+        const request = await fetch(`/api/room/${uuid}/session/new`, {
+            method: "POST",
+        });
+
+        console.log(await request.json());
+
         navigate({
             to: "/room/$id",
-            params: { id: id ?? crypto.randomUUID() },
+            params: { id: uuid },
         });
     };
 

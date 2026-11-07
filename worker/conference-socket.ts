@@ -41,6 +41,7 @@ export class ConferenceSocket extends DurableObject {
         message: string | ArrayBuffer,
     ): void | Promise<void> {
         if (typeof message === "string") {
+            
         }
     }
 

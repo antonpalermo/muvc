@@ -11,6 +11,22 @@ const app = new Hono<{
     Bindings: HonoBindings;
 }>().basePath("/api");
 
+app.post("/room/:id/session/new", async (ctx) => {
+    const roomId = ctx.req.param().id;
+    const sfu = `https://rtc.live.cloudflare.com/v1/apps/${ctx.env.SFU_APP_ID}/sessions/new`;
+
+    const request = await fetch(sfu, {
+        headers: {
+            Authorization: ctx.env.SFU_APP_TOKEN,
+            "Content-Type": "application/json",
+        },
+    });
+
+    const data = await request.json();
+
+    return ctx.json({ roomId, status: "success", data });
+});
+
 app.get("/room/:id", async (ctx) => {
     const roomId = ctx.req.param().id;
     const upgradeHeader = ctx.req.header("Upgrade");
