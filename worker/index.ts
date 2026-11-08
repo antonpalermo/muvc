@@ -16,8 +16,9 @@ app.post("/room/:id/session/new", async (ctx) => {
     const sfu = `https://rtc.live.cloudflare.com/v1/apps/${ctx.env.SFU_APP_ID}/sessions/new`;
 
     const request = await fetch(sfu, {
+        method: "POST",
         headers: {
-            Authorization: ctx.env.SFU_APP_TOKEN,
+            Authorization: `Bearer ${ctx.env.SFU_APP_TOKEN}`,
             "Content-Type": "application/json",
         },
     });
