@@ -3,13 +3,18 @@ import type { ConferenceSocket } from "./conference-socket.ts";
 
 export { ConferenceSocket } from "./conference-socket.ts";
 
-export type HonoBindings = CloudflareBindings & {
-    CONFERENCE_SOCKET: DurableObjectNamespace<ConferenceSocket>;
+// export type HonoBindings = CloudflareBindings & {
+//     CONFERENCE_SOCKET: DurableObjectNamespace<ConferenceSocket>;
+// };
+
+export type HonoBindings = {
+    Bindings: CloudflareBindings;
+    Variables: {
+        conference: DurableObjectNamespace<ConferenceSocket>;
+    };
 };
 
-const app = new Hono<{
-    Bindings: HonoBindings;
-}>().basePath("/api");
+const app = new Hono<HonoBindings>().basePath("/api");
 
 app.post("/room/:id/session/new", async (ctx) => {
     const roomId = ctx.req.param().id;
